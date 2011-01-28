@@ -1,0 +1,60 @@
+<!DOCTYPE plugin SYSTEM "../../libs/devblocks/plugin.dtd">
+<plugin>
+	<id>net.pixelinstrument.weekly_report</id>
+	<name>[PI] Weekly Report</name>
+	<description>Allows workers to send a (weekly) report with the list of their tasks, tickets and customer updates Version 1.0.0</description>
+	<author>Davide Cassenti</author>
+	<revision>1.0.0</revision>
+	<link>http://www.pixelinstrument.net</link>
+	
+	<!-- Dependencies -->
+	
+	<dependencies>
+		<require plugin_id="devblocks.core" version="2.0.0" />
+	</dependencies>
+	
+	<class_loader>
+		<file path="api/uri/weekly_report.php">
+			<class name="PiWeeklyReportPage" />
+		</file>
+		<file path="api/config/weekly_report.php">
+			<class name="PiWeeklyReportConfigTab" />
+		</file>
+	</class_loader>
+	
+	
+	<!-- ACL -->
+	<acl>
+		<priv id="net.pixelinstrument.weekly_report.acl.see_others_report" label="net.pixelinstrument.weekly_report.acl.see_others_report" />
+	</acl>
+	
+	
+	<!-- Exported Classes -->
+	<extensions>
+		<extension point="cerberusweb.page">
+			<id>net.pixelinstrument.weekly_report.page</id>
+			<name>Weekly Report Page</name>
+			<class>
+				<file>api/uri/weekly_report.php</file>
+				<name>PiWeeklyReportPage</name>
+			</class>
+			<params>
+				<param key="uri" value="weeklyreport" />
+				<param key="menutitle" value="Weekly Report" />
+			</params>
+		</extension>
+		
+		<extension point="cerberusweb.config.tab">
+			<id>net.pixelinstrument.weekly_report.config.tab</id>
+			<name>Weekly Report Tab</name>
+			<class>
+				<file>api/config/weekly_report.php</file>
+				<name>PiWeeklyReportConfigTab</name>
+			</class>
+			<params>
+				<param key="uri" value="weeklyreport" />
+				<param key="title" value="Weekly Report" />
+			</params>
+		</extension>
+	</extensions>
+</plugin>

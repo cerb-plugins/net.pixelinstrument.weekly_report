@@ -1,0 +1,15 @@
+////////////////////////////////////////////////////////////////
+
+	Cerberus 5 Weekly Report
+	Plugin ID: net.pixelinstrument.weekly_report
+	Licence: GPLv3 http://www.gnu.org/licenses/gpl-3.0.txt
+
+////////////////////////////////////////////////////////////////
+
+The plugin allows to allow workers to send out weekly reports withing the
+Cerberus Help Desk 5 gui.
+
+=== INSTALLATION ===
+- install and configure Cerberus Help Desk 5 (http://www.cerberusweb.com)
+- download the code in <Cerb5>/storage/plugins/net.pixelinstrument.weekly_report
+- activate the plugin under setup | Plugins & Features
