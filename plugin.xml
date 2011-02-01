@@ -2,9 +2,9 @@
 <plugin>
 	<id>net.pixelinstrument.weekly_report</id>
 	<name>[PI] Weekly Report</name>
-	<description>Allows workers to send a (weekly) report with the list of their tasks, tickets and customer updates Version 1.0.0</description>
+	<description>Allows workers to send a (weekly) report with the list of their tasks, tickets and customer updates Version 1.0.1</description>
 	<author>Davide Cassenti</author>
-	<revision>1.0.0</revision>
+	<revision>1.0.1</revision>
 	<link>http://www.pixelinstrument.net</link>
 	
 	<!-- Dependencies -->
@@ -54,6 +54,19 @@
 			<params>
 				<param key="uri" value="weeklyreport" />
 				<param key="title" value="Weekly Report" />
+			</params>
+		</extension>
+		
+		<!-- Toolbar text -->	
+		
+		<extension point="cerberusweb.ticket.toolbaritem">
+			<id>appcelerator.sla.ticket.toolbaritem</id>
+			<name>Appcelerator SLA Toolbar</name>
+			<class>
+				<file>api/toolbar/sla.php</file>
+				<name>AppceleratorToolbarSLA</name>
+			</class>
+			<params>
 			</params>
 		</extension>
 	</extensions>
