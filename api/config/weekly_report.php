@@ -23,7 +23,8 @@ class PiWeeklyReportConfigTab extends Extension_ConfigTab {
     function saveTab() {
         $destinations = CerberusApplication::getHelpdeskSenders();
         $main_mail_send_to = current ($destinations);
-        
+
+		@$show_sla_bar = DevblocksPlatform::importGPC($_REQUEST['show_sla_bar'], 'string', 0);
         @$task_list_days = DevblocksPlatform::importGPC($_REQUEST['task_list_days'], 'integer', 14);
         @$customer_list_days = DevblocksPlatform::importGPC($_REQUEST['customer_list_days'], 'integer', 14);
         @$ticket_list_days = DevblocksPlatform::importGPC($_REQUEST['ticket_list_days'], 'integer', 14);
@@ -50,6 +51,7 @@ class PiWeeklyReportConfigTab extends Extension_ConfigTab {
         }
         
         $properties = array();
+		$properties['show_sla_bar'] = $show_sla_bar;
         $properties['task_list_days'] = $task_list_days;
         $properties['customer_list_days'] = $customer_list_days;
         $properties['ticket_list_days'] = $ticket_list_days;

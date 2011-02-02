@@ -4,6 +4,9 @@
     <input type="hidden" name="c" value="config">
     <input type="hidden" name="a" value="saveTab">
     <input type="hidden" name="ext_id" value="net.pixelinstrument.weekly_report.config.tab">
+	
+	Show SLA information in ticket page:
+	<input type="checkbox" name="show_sla_bar" value="1" {if $properties['show_sla_bar']}checked{/if} /><br/><br/>
         
     Reports will come from:
     <input type="text" name="from" value="{$properties['from']}" /><br/><br/>
