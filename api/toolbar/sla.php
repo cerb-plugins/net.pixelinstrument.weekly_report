@@ -23,8 +23,10 @@ if (class_exists('Extension_TicketToolbarItem',true)):
 				
 				$first_response_date = $now;
 				$last_response_date = 0;
+				$no_response = true;
 				
 				foreach ($tickets_messages as $message) {
+					$no_response = false;
 					$t_id = $message[SearchFields_Message::TICKET_ID];
 					
 					if ($first_response_date > $message[SearchFields_Message::CREATED_DATE])
@@ -60,6 +62,7 @@ if (class_exists('Extension_TicketToolbarItem',true)):
 					}
 				}
 				
+				$tpl->assign ('no_response', $no_response);
 				$tpl->assign ('ticket_sla', $sla);
 				$tpl->assign ('customer_type', $customer_type);
 				$tpl->assign ('first_update', PiWeeklyReportPage::calculateWorkingDays ($ticket->created_date, $first_response_date));
