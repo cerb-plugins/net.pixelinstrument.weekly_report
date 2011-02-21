@@ -26,9 +26,13 @@
         {if $open_tickets}
             <tr>
                 <td><h3 class="green">Open Tickets</h3></td>
-                <td colspan="3"></td>
-                <td class="center strong">SLA</td>
-                <td class="center strong">Latest Response</td>
+                {if $sla_available}
+					<td colspan="3"></td>
+					<td class="center strong">SLA</th>
+					<td class="center strong">Latest Response</td>
+				{else}
+					<td colspan="5"></td>
+				{/if}
             </tr>
             {foreach from=$tickets key=t_id item=ticket}
                 {if !$ticket.t_is_closed && !$ticket.t_is_waiting}
@@ -41,9 +45,13 @@
         {if $wfr_tickets}
             <tr>
                 <td><h3 class="yellow">WFR Tickets</h3></td>
-                <td colspan="3"></td>
-                <td class="center strong">SLA</th>
-                <td class="center strong">Latest Response</td>
+                {if $sla_available}
+					<td colspan="3"></td>
+					<td class="center strong">SLA</th>
+					<td class="center strong">Latest Response</td>
+				{else}
+					<td colspan="5"></td>
+				{/if}
             </tr>
             {foreach from=$tickets key=t_id item=ticket}
                 {if !$ticket.t_is_closed && $ticket.t_is_waiting}
@@ -56,9 +64,13 @@
         {if $closed_tickets}
             <tr>
                 <td><h3 class="red">Closed Tickets</h3></td>
-                <td colspan="3"></td>
-                <td class="center strong">SLA</td>
-                <td class="center strong">Latest Response</td>
+                {if $sla_available}
+					<td colspan="3"></td>
+					<td class="center strong">SLA</th>
+					<td class="center strong">Latest Response</td>
+				{else}
+					<td colspan="5"></td>
+				{/if}
             </tr>
             {foreach from=$tickets key=t_id item=ticket}
                 {if $ticket.t_is_closed}

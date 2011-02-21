@@ -75,6 +75,7 @@ class PiWeeklyReportPage extends CerberusPageExtension {
         $tpl->assign('customers', $customers);
         
         list($tickets, $assigned_tickets, $responded_tickets) = $this->_getTickets();
+		$tpl->assign('sla_available', (class_exists('PiSlaUtils',true) && DevblocksPlatform::isPluginEnabled('net.pixelinstrument.sla')));
         $tpl->assign('tickets', $tickets);
         $tpl->assign('assigned_tickets', $assigned_tickets);
         $tpl->assign('responded_tickets', $responded_tickets);
@@ -206,6 +207,7 @@ class PiWeeklyReportPage extends CerberusPageExtension {
         $tpl->assign('last_update_time', $last_update_time);
         
         list($tickets, $assigned_tickets, $responded_tickets) = $this->_getTickets();
+		$tpl->assign('sla_available', (class_exists('PiSlaUtils',true) && DevblocksPlatform::isPluginEnabled('net.pixelinstrument.sla')));
         $tpl->assign('tickets', $tickets);
         $tpl->assign('assigned_tickets', $assigned_tickets);
         $tpl->assign('responded_tickets', $responded_tickets);
@@ -407,20 +409,11 @@ class PiWeeklyReportPage extends CerberusPageExtension {
         if (!isset($properties['send_to']))
             $properties['send_to'] = $main_mail_send_to;
             
-        if (!isset($properties['working_days']))
-            $properties['working_days'] = array(1,2,3,4,5);
-            
-        if (!isset($properties['holidays']))
-            $properties['holidays'] = array();
-            
         if (!isset($properties['customer_type_field_id']))
             $properties['customer_type_field_id'] = 0;
             
         if (!isset($properties['product_field_id']))
             $properties['product_field_id'] = 0;
-            
-        if (!isset($properties['sla']))
-            $properties['sla'] = array();
             
         if (!isset($properties['from']))
             $properties['from'] = "";
@@ -653,80 +646,15 @@ class PiWeeklyReportPage extends CerberusPageExtension {
         $responded_tickets = sizeof (array_intersect ($responded_tickets_ids, $tickets_ids));
         
         
-        // now, gets the response times
-        
-        list($tickets_messages) = DAO_Message::search(
-            array(
-                new DevblocksSearchCriteria(SearchFields_Message::TICKET_ID, DevblocksSearchCriteria::OPER_IN, $tickets_ids),
-                new DevblocksSearchCriteria(SearchFields_Message::IS_OUTGOING, '=', 1),
-            ),
-            -1,
-            0,
-            SearchFields_Message::CREATED_DATE,
-            true,
-            false
-        );
-        
-        $now = time();
-        
-        foreach ($tickets_messages as $message) {
-            $t_id = $message[SearchFields_Message::TICKET_ID];
-            
-            if (!isset($tickets[$t_id]['t_first_response_time']) || $tickets[$t_id]['t_first_response_time'] > $message[SearchFields_Message::CREATED_DATE]) {
-                $tickets[$t_id]['t_first_response_time'] = $message[SearchFields_Message::CREATED_DATE];
-            }
-            
-            if (!isset($tickets[$t_id]['t_last_response_time']) || $tickets[$t_id]['t_last_response_time'] < $message[SearchFields_Message::CREATED_DATE]) {
-                $tickets[$t_id]['t_last_response_time'] = $message[SearchFields_Message::CREATED_DATE];
-            }
-        }
-        
-        
-        // get all the customers custom values
-        
-        list($customers) = DAO_ContactOrg::search (
-            array(),
-            array(),
-            -1,
-            0,
-            null,
-            null,
-            false
-        );
-
-        $customers_custom_values = DAO_CustomFieldValue::getValuesByContextIds(CerberusContexts::CONTEXT_ORG, array_keys ($customers));
         $tickets_custom_values = DAO_CustomFieldValue::getValuesByContextIds(CerberusContexts::CONTEXT_TICKET, array_keys ($tickets));
         
         foreach ($tickets as $t_id => $ticket) {
-            // write down the number of days used to reply to each ticket (-1 if not responded)
-            
-            if (isset ($tickets[$t_id]['t_first_response_time']))
-                $response_date = $tickets[$t_id]['t_first_response_time'];
-            else
-                $response_date = $now;
-            
-            $tickets[$t_id]['t_response_days'] = self::calculateWorkingDays ($ticket[SearchFields_Ticket::TICKET_CREATED_DATE], $response_date);
-            
-            
-            // check the SLA if the customer is set
-            
-            $sla = 0;
-            $customer_id = $tickets[$t_id]['t_first_contact_org_id'];
-            
-            $customer_type_field_id = $properties['customer_type_field_id'];
-            $customer_type = "";
-            if ($customer_id &&
-                $customer_type_field_id &&
-                isset ($customers_custom_values[$customer_id]) &&
-                isset ($customers_custom_values[$customer_id][$customer_type_field_id])) {
-                
-                $customer_type = $customers_custom_values[$customer_id][$customer_type_field_id];
-
-                $sla = isset ($properties['sla'][$customer_type]) ? ($properties['sla'][$customer_type]) : 0;
-            }
-            
-            $tickets[$t_id]['t_sla'] = $sla;
-            $tickets[$t_id]['t_customer_type'] = ($customer_type ? $customer_type : "");
+            // if we have the SLA plugin, let's include SLA
+            if (class_exists('PiSlaUtils',true) && DevblocksPlatform::isPluginEnabled('net.pixelinstrument.sla')) {
+				$ticket_sla_info = PiSlaUtils::getTicketSLAInfo ($t_id);
+				
+				$tickets[$t_id]['t_sla_info'] = $ticket_sla_info;
+			}
             
             $product_field_id = $properties['product_field_id'];
             if ($product_field_id &&

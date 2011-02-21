@@ -9,6 +9,10 @@ The plugin allows to allow workers to send out (weekly) reports within the Cerbe
 
 The `weekly` word is just to explain how this is supposed to work: the plugin does not verify that a worker is sending the report on a weekly basis and, in fact, the report can be sent even twice in the same day.
 
+Notes on the SLA
+----------------
+The SLA related calculations are performed by another plugin `net.pixelinstrument.sla`; if the plugin is missing or not installed, these information are simply not appearing in the page.
+
 Installation
 ------------
 * Change directory to **/cerb5/storage/plugins/**
